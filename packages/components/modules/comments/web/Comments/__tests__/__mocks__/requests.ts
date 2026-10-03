@@ -1126,9 +1126,7 @@ export const commentsWithMultiLineBodiesMockData = {
               user: {
                 id: 'user-1',
                 fullName: 'John Doe',
-                avatar: {
-                  url: 'https://cdn.example.com/avatar1.png',
-                },
+                avatar: 'https://cdn.example.com/avatar1.png',
               },
               reactionsCount: { total: 0 },
               myReaction: null,
@@ -1151,9 +1149,7 @@ export const commentsWithMultiLineBodiesMockData = {
               user: {
                 id: 'user-2',
                 fullName: 'Jane Smith',
-                avatar: {
-                  url: 'https://cdn.example.com/avatar2.png',
-                },
+                avatar: 'https://cdn.example.com/avatar2.png',
               },
               reactionsCount: { total: 0 },
               myReaction: null,

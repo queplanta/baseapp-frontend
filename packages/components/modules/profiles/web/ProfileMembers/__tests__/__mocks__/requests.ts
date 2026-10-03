@@ -88,9 +88,7 @@ export const allRolesMembersListMockData = {
         profile: {
           id: 'owner-profile-id',
           name: 'Owner Profile',
-          image: {
-            url: 'https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/react.svg',
-          },
+          image: 'https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/react.svg',
           urlPath: null,
         },
       },
@@ -127,9 +125,7 @@ export const fullMembersListMockData = {
         profile: {
           id: 'owner-profile-id',
           name: 'Owner Profile',
-          image: {
-            url: 'https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/react.svg',
-          },
+          image: 'https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/react.svg',
           urlPath: null,
         },
       },
@@ -166,9 +162,7 @@ export const fullMembersListNextPageMockData = {
         profile: {
           id: 'owner-profile-id',
           name: 'Owner Profile',
-          image: {
-            url: 'https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/react.svg',
-          },
+          image: 'https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/react.svg',
           urlPath: null,
         },
       },
