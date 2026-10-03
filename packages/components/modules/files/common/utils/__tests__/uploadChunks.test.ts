@@ -1,9 +1,11 @@
+import { vi } from 'vitest'
+
 import { uploadChunk } from '../uploadChunk'
 import { uploadChunks } from '../uploadChunks'
 
-jest.mock('../uploadChunk')
+vi.mock('../uploadChunk')
 
-const mockUploadChunk = uploadChunk as jest.MockedFunction<typeof uploadChunk>
+const mockUploadChunk = vi.mocked(uploadChunk)
 
 const makeChunks = (amount: number) => Array.from({ length: amount }, () => new Blob(['x']))
 const makeUrls = (amount: number) =>
@@ -41,7 +43,7 @@ describe('uploadChunks', () => {
     mockUploadChunk.mockImplementation((_chunk, url) =>
       Promise.resolve(`etag-${url.split('-').pop()}`),
     )
-    const onChunkComplete = jest.fn()
+    const onChunkComplete = vi.fn()
 
     await uploadChunks({
       chunks: makeChunks(3),
