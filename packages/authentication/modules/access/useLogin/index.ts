@@ -8,6 +8,7 @@ import {
   decodeJWT,
   setFormApiErrors,
   setTokenAsync,
+  shouldUseSecureCookies,
 } from '@baseapp-frontend/utils'
 import { isMobilePlatform } from '@baseapp-frontend/utils/functions/os'
 
@@ -80,10 +81,10 @@ const useLogin = <TApiClass extends ApiClass = typeof AuthApi>({
     }
 
     await setTokenAsync(accessKeyName, response.access, {
-      secure: process.env.NODE_ENV === 'production',
+      secure: shouldUseSecureCookies(),
     })
     await setTokenAsync(refreshKeyName, response.refresh, {
-      secure: process.env.NODE_ENV === 'production',
+      secure: shouldUseSecureCookies(),
     })
   }
 

@@ -2,6 +2,7 @@ import { ACCESS_KEY_NAME, REFRESH_KEY_NAME } from '../../../constants/jwt'
 import { getAccessToken } from '../getAccessToken'
 import { removeTokenAsync } from '../removeTokenAsync'
 import { setTokenAsync } from '../setTokenAsync'
+import { shouldUseSecureCookies } from '../shouldUseSecureCookies'
 import { RefreshAccessTokenParams } from './types'
 
 export const refreshAccessToken = async ({
@@ -13,7 +14,7 @@ export const refreshAccessToken = async ({
     const accessToken = await getAccessToken(refreshToken)
 
     await setTokenAsync(accessKeyName, accessToken, {
-      secure: process.env.NODE_ENV === 'production',
+      secure: shouldUseSecureCookies(),
     })
 
     return accessToken
