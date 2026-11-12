@@ -10,13 +10,14 @@ import {
   ThreeDotsIcon,
 } from '@baseapp-frontend/design-system/components/web/icons'
 import { useResponsive } from '@baseapp-frontend/design-system/hooks/web'
-import { useNotification } from '@baseapp-frontend/utils'
+import { useNotification, useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Button, Divider, MenuItem, Typography } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import { useFragment } from 'react-relay'
 
 import { ProfileComponentFragment, formatFollowCount } from '../../common'
+import { PROFILES_TEXTS, PROFILES_TEXTS_NAMESPACE } from '../../common/constants'
 import BlockButtonWithDialog from './BlockButtonWithDialog'
 import FollowToggleButton from './FollowToggleButton'
 import ReportButtonWithDialog from './ReportButtonWithDialog'
@@ -42,6 +43,7 @@ const ProfileComponent: FC<ProfileComponentProps> = ({
   currentProfileId,
   bannerFallback = '/png/profile-banner-fallback.png',
 }) => {
+  const texts = useTextOverrides(PROFILES_TEXTS_NAMESPACE, PROFILES_TEXTS)
   const profile = useFragment(ProfileComponentFragment, profileRef)
   const smDown = useResponsive('down', 'sm')
   const router = useRouter()
@@ -60,7 +62,7 @@ const ProfileComponent: FC<ProfileComponentProps> = ({
     const path = profile?.urlPath?.path ?? `/profile/${profile?.id}`
     const url = [process.env.NEXT_PUBLIC_APP_BASE_URL, path].join('')
     navigator.clipboard.writeText(url)
-    sendToast('Profile URL copied to clipboard!', { type: 'success' })
+    sendToast(texts.profileUrlCopied, { type: 'success' })
     handleClose()
   }
 
@@ -75,7 +77,7 @@ const ProfileComponent: FC<ProfileComponentProps> = ({
           sx={{ maxWidth: smDown ? '100%' : 'fit-content' }}
           onClick={() => router.push('/user/settings')}
         >
-          Edit Profile
+          {texts.editProfile}
         </Button>
       )
     }
@@ -98,7 +100,7 @@ const ProfileComponent: FC<ProfileComponentProps> = ({
   const menuOptions = [
     <MenuItem key="share" onClick={handleShareClick} disableRipple>
       <ShareIcon />
-      Share profile
+      {texts.shareProfile}
     </MenuItem>,
     smDown && <Divider key="divider" />,
     profile && currentProfileId !== profile?.id && (
@@ -123,7 +125,7 @@ const ProfileComponent: FC<ProfileComponentProps> = ({
         <Banner
           src={bannerSrc}
           fallbackSrc={bannerFallback}
-          alt="Home Banner"
+          alt={texts.bannerAlt}
           width={868}
           height={
             290 /* Some css height: auto takes precedence,
@@ -154,7 +156,7 @@ const ProfileComponent: FC<ProfileComponentProps> = ({
                     {formatFollowCount(profile?.followersCount)}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Followers
+                    {texts.followers}
                   </Typography>
                 </CountContainer>
                 <CountContainer>
@@ -162,7 +164,7 @@ const ProfileComponent: FC<ProfileComponentProps> = ({
                     {formatFollowCount(profile?.followingCount)}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Following
+                    {texts.following}
                   </Typography>
                 </CountContainer>
               </FollowCountsContainer>

@@ -1,5 +1,7 @@
 import { FC, useTransition } from 'react'
 
+import { useTextOverrides } from '@baseapp-frontend/utils'
+
 import { Box } from '@mui/material'
 import { Virtuoso } from 'react-virtuoso'
 
@@ -8,6 +10,7 @@ import {
   NUMBER_OF_COMMENTS_TO_LOAD_NEXT,
   useCommentList,
 } from '../../../common'
+import { COMMENTS_TEXTS, COMMENTS_TEXTS_NAMESPACE } from '../../../common/constants'
 import { LoadMoreRepliesButton, Spacer } from './styled'
 import { CommentsRepliesProps } from './types'
 
@@ -20,6 +23,7 @@ const CommentsReplies: FC<CommentsRepliesProps> = ({
   CommentItemProps = {},
   VirtuosoProps,
 }) => {
+  const texts = useTextOverrides(COMMENTS_TEXTS_NAMESPACE, COMMENTS_TEXTS)
   const { data: target, comments, loadNext, isLoadingNext, hasNext } = useCommentList(targetRef)
   const [isPending, startTransition] = useTransition()
 
@@ -64,7 +68,7 @@ const CommentsReplies: FC<CommentsRepliesProps> = ({
             })
           }}
         >
-          Show more replies ({commentsLeft})
+          {texts.showMoreReplies(commentsLeft)}
         </LoadMoreRepliesButton>
       </Box>
     )

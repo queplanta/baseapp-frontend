@@ -8,6 +8,7 @@ import {
   UnreadIcon,
 } from '@baseapp-frontend/design-system/components/web/icons'
 import { TypographyWithEllipsis } from '@baseapp-frontend/design-system/components/web/typographies'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, Badge as DefaultBadge, Typography } from '@mui/material'
 import { useFragment } from 'react-relay'
@@ -24,6 +25,7 @@ import {
   useTitleAndImage,
   useUnreadChatMutation,
 } from '../../../common'
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from '../../../common/texts'
 import { Dot, StyledChatCard } from './styled'
 import { ChatRoomItemProps } from './types'
 import { formatDate, getLastMessagePreview } from './utils'
@@ -36,6 +38,7 @@ const ChatRoomItem: FC<ChatRoomItemProps> = ({
   BadgeProps = {},
   isInArchivedTab = false,
 }) => {
+  const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
   const lastMessageFragment = useFragment<LastMessageFragment$key>(LastMessageFragment, roomRef)
   const headerFragment = useFragment<TitleFragment$key>(TitleFragment, roomRef)
   const unreadMessagesCountFragment = useFragment<UnreadMessagesCountFragment$key>(
@@ -76,13 +79,13 @@ const ChatRoomItem: FC<ChatRoomItemProps> = ({
 
   return (
     <ActionsOverlay
-      title="Chat"
+      title={texts.chat}
       offsetTop={-12}
       actions={[
         {
           disabled: isMutationInFlight,
           icon: !isInArchivedTab ? <ArchiveIcon /> : <UnarchiveIcon />,
-          label: !isInArchivedTab ? 'Archive Chat' : 'Unarchive Chat',
+          label: !isInArchivedTab ? texts.archiveChat : texts.unarchiveChat,
           onClick: () => {
             if (currentProfile?.id) {
               commit({
@@ -101,7 +104,7 @@ const ChatRoomItem: FC<ChatRoomItemProps> = ({
         {
           disabled: hasUnreadMessages,
           icon: <UnreadIcon />,
-          label: 'Mark as Unread',
+          label: texts.markAsUnread,
           onClick: unreadChat,
           hasPermission: true,
           closeOnClick: true,
@@ -133,7 +136,7 @@ const ChatRoomItem: FC<ChatRoomItemProps> = ({
               alignItems="center"
             >
               <Typography variant="caption" color="text.secondary" noWrap>
-                {formatDate(lastMessageTime)}
+                {formatDate(lastMessageTime, texts)}
               </Typography>
               <Dot />
               <TypographyWithEllipsis variant="caption" color="text.secondary">

@@ -1,7 +1,16 @@
-import { DATE_FORMAT, formatDateFromApi, isToday, isYesterday } from '@baseapp-frontend/utils'
+import { DATE_FORMAT, isToday, isYesterday } from '@baseapp-frontend/utils'
 
-export const displayFormattedDate = (date: string) => {
-  if (isToday(date)) return 'Today'
-  if (isYesterday(date)) return 'Yesterday'
-  return formatDateFromApi(date, { toFormat: DATE_FORMAT[2] })
+import { DateTime } from 'luxon'
+
+import { MESSAGES_TEXTS } from '../../../common/texts'
+
+export const displayFormattedDate = (
+  date: string,
+  texts: Pick<typeof MESSAGES_TEXTS, 'today' | 'yesterday' | 'dateLocale'> = MESSAGES_TEXTS,
+) => {
+  if (isToday(date)) return texts.today
+  if (isYesterday(date)) return texts.yesterday
+  const parsed = DateTime.fromISO(date)
+  const dateTime = texts.dateLocale && parsed.isValid ? parsed.setLocale(texts.dateLocale) : parsed
+  return dateTime.toFormat(DATE_FORMAT[2])
 }

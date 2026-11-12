@@ -3,6 +3,7 @@
 import { type ChangeEvent, type FC, useState, useTransition } from 'react'
 
 import { Searchbar } from '@baseapp-frontend/design-system/components/web/inputs'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
@@ -12,6 +13,7 @@ import { FetchParameters, useActivityLogs } from '../../common'
 import DateFilterChip from './DateFilterChip'
 import EventFilterChip from './EventFilterChip'
 import DefaultLogGroups from './LogGroups'
+import { ACTIVITY_LOG_TEXTS, ACTIVITY_LOG_TEXTS_NAMESPACE } from './constants'
 import { ActivityLogComponentProps, EventFilterOption } from './types'
 
 const ActivityLogComponent: FC<ActivityLogComponentProps> = ({
@@ -19,6 +21,7 @@ const ActivityLogComponent: FC<ActivityLogComponentProps> = ({
   LogGroups = DefaultLogGroups,
   LogGroupsProps,
 }) => {
+  const texts = useTextOverrides(ACTIVITY_LOG_TEXTS_NAMESPACE, ACTIVITY_LOG_TEXTS)
   const [fetchParameters, setFetchParameters] = useState<FetchParameters>({
     createdFrom: null,
     createdTo: null,
@@ -60,10 +63,10 @@ const ActivityLogComponent: FC<ActivityLogComponentProps> = ({
     <Box p={2} justifyContent="center" minWidth="100%" display="flex" alignItems="center">
       <Box justifyContent="center" maxWidth={600} width="100%" mx="auto">
         <Typography component="h4" variant="h4" mb={4}>
-          Activity Log
+          {texts.title}
         </Typography>
         <Searchbar
-          placeholder="Search by user"
+          placeholder={texts.searchPlaceholder}
           name="search"
           control={control}
           onChange={handleSearchChange}
@@ -81,9 +84,7 @@ const ActivityLogComponent: FC<ActivityLogComponentProps> = ({
         {!isPending && searchValue && emptyLogsList && <SearchNotFoundState />}
         {!isPending &&
           (fetchParameters.createdFrom != null || fetchParameters.createdTo != null) &&
-          emptyLogsList && (
-            <SearchNotFoundState message="No results found for the selected date range." />
-          )}
+          emptyLogsList && <SearchNotFoundState message={texts.noResultsForDateRange} />}
         <LogGroups
           logGroups={logGroups}
           loadNext={loadNext}

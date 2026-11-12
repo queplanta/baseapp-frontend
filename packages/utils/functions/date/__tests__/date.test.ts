@@ -64,6 +64,21 @@ describe('Date formatting utilities', () => {
   })
 
   describe('formatRelativeTime function', () => {
+    it('uses the given texts and locale instead of the English defaults', () => {
+      const texts = {
+        locale: 'pt-BR',
+        dateFormat: 'd LLL yyyy',
+        minutesAgo: (minutes: number) => `há ${minutes} min`,
+        hoursAgo: (hours: number) => `há ${hours} h`,
+        daysAgo: (days: number) => `há ${days} d`,
+      }
+      const reference = DateTime.fromISO('2026-01-20T12:00:00')
+      expect(formatRelativeTime('2026-01-20T11:50:00', { reference, texts })).toBe('há 10 min')
+      expect(formatRelativeTime('2026-01-20T09:00:00', { reference, texts })).toBe('há 3 h')
+      expect(formatRelativeTime('2026-01-17T12:00:00', { reference, texts })).toBe('há 3 d')
+      expect(formatRelativeTime('2025-11-03T12:00:00', { reference, texts })).toBe('3 nov. 2025')
+    })
+
     it('should return "-" for invalid date input', () => {
       expect(formatRelativeTime()).toBe('-')
       expect(formatRelativeTime(null)).toBe('-')

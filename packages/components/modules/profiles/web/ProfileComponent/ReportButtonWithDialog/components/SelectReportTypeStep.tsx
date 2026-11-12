@@ -2,9 +2,11 @@ import { FC } from 'react'
 
 import { ChevronIcon } from '@baseapp-frontend/design-system/components/web/icons'
 import { useResponsive } from '@baseapp-frontend/design-system/hooks/web'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, Divider, Typography } from '@mui/material'
 
+import { PROFILES_TEXTS, PROFILES_TEXTS_NAMESPACE } from '../../../../common/constants'
 import { STEPS } from '../constants'
 import { TypeButton } from '../styled'
 import { ReportTypeNode, ReportTypeSubTypeNode, SelectReportTypeStepProps } from '../types'
@@ -17,6 +19,7 @@ const SelectReportTypeStep: FC<SelectReportTypeStepProps> = ({
   setCurrentStep,
   setReportSubType,
 }) => {
+  const texts = useTextOverrides(PROFILES_TEXTS_NAMESPACE, PROFILES_TEXTS)
   const smDown = useResponsive('down', 'sm')
   const renderReportTypeButtons = (
     types:
@@ -54,13 +57,12 @@ const SelectReportTypeStep: FC<SelectReportTypeStepProps> = ({
         <>
           <Box>
             <Typography variant="h5" textAlign={smDown ? 'center' : 'left'}>
-              Why are you reporting this?
+              {texts.reportWhy}
             </Typography>
           </Box>
           <Box>
             <Typography variant="body2" textAlign={smDown ? 'center' : 'left'}>
-              Your report is anonymous. If someone is in immediate danger, call the local emergency
-              services - don&apos;t wait.
+              {texts.reportAnonymous}
             </Typography>
           </Box>
         </>

@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
 
-import { DATE_FORMAT, TIME_FORMAT } from '../../constants/date'
+import { DATE_FORMAT, RELATIVE_TIME_TEXTS, TIME_FORMAT } from '../../constants/date'
 import {
+  DateFormat,
   FormatDateFromApiOptions,
   FormatDateOptions,
   FormatDateToApiOptions,
@@ -32,9 +33,14 @@ export const formatDateToApi = (
 
 export const formatRelativeTime = (
   date?: string | null,
-  { reference = DateTime.now(), toFormat = DATE_FORMAT[2] }: FormatRelativeTimeOptions = {},
+  {
+    reference = DateTime.now(),
+    texts = RELATIVE_TIME_TEXTS,
+    toFormat = texts.dateFormat as DateFormat,
+  }: FormatRelativeTimeOptions = {},
 ) => {
-  const dateFromApi = DateTime.fromISO(date ?? '')
+  const parsed = DateTime.fromISO(date ?? '')
+  const dateFromApi = texts.locale && parsed.isValid ? parsed.setLocale(texts.locale) : parsed
 
   if (!dateFromApi.isValid) return '-'
 
@@ -51,12 +57,12 @@ export const formatRelativeTime = (
 
   if (daysDiff < 1) {
     if (hoursDiff >= 1) {
-      return hoursDiff >= 2 ? `${Math.floor(hoursDiff)} hours ago` : '1 hour ago'
+      return texts.hoursAgo(Math.floor(hoursDiff))
     }
-    return minutesDiff >= 2 ? `${Math.floor(minutesDiff)} minutes ago` : '1 minute ago'
+    return texts.minutesAgo(Math.floor(minutesDiff))
   }
 
-  return daysDiff >= 2 ? `${Math.floor(daysDiff)} days ago` : '1 day ago'
+  return texts.daysAgo(Math.floor(daysDiff))
 }
 
 export const isToday = (date: string) => {

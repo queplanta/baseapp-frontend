@@ -19,8 +19,20 @@ export type FormatDateToApiOptions = {
   fromFormat?: DateFormat | TimeFormat
 }
 
+export type RelativeTimeTexts = {
+  /** Luxon locale for the dates of older items ('' keeps Luxon's default). */
+  locale: string
+  /** Luxon format of dates older than a month, unless `toFormat` is given. */
+  dateFormat: string
+  minutesAgo: (minutes: number) => string
+  hoursAgo: (hours: number) => string
+  daysAgo: (days: number) => string
+}
+
 export type FormatRelativeTimeOptions = {
   reference?: DateTime
   toFormat?: DateFormat | TimeFormat
   lowerCaseTimeIndicator?: boolean
+  /** Replaces the default English texts (`RELATIVE_TIME_TEXTS`), e.g. to translate them. */
+  texts?: RelativeTimeTexts
 }

@@ -1,6 +1,7 @@
 import { FC } from 'react'
 
 import { AvatarDeletedUserIcon } from '@baseapp-frontend/design-system/components/web/icons'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { Virtuoso } from 'react-virtuoso'
@@ -8,6 +9,7 @@ import { Virtuoso } from 'react-virtuoso'
 import { Timestamp } from '../../../../__shared__/web'
 import { ActivityLogNode, LogGroup } from '../../../common'
 import LogItem from '../LogItem'
+import { ACTIVITY_LOG_TEXTS, ACTIVITY_LOG_TEXTS_NAMESPACE } from '../constants'
 import { GroupAvatar, ScrollContainer } from './styled'
 import { LogGroupsProps } from './types'
 
@@ -20,6 +22,7 @@ const LogGroups: FC<LogGroupsProps> = ({
   hasNext,
   isLoadingNext,
 }) => {
+  const texts = useTextOverrides(ACTIVITY_LOG_TEXTS_NAMESPACE, ACTIVITY_LOG_TEXTS)
   const renderLogItem = (log: ActivityLogNode, isLast: boolean) => {
     if (!log) return null
 
@@ -33,7 +36,7 @@ const LogGroups: FC<LogGroupsProps> = ({
       <LoadingState
         sx={{ paddingTop: 3, paddingBottom: 1 }}
         CircularProgressProps={{ size: 15 }}
-        aria-label="loading more activity logs"
+        aria-label={texts.loadingMore}
         {...LoadingStateProps}
       />
     )

@@ -1,3 +1,6 @@
+import { useTextOverrides } from '@baseapp-frontend/utils'
+
+import { COMMENTS_TEXTS, COMMENTS_TEXTS_NAMESPACE } from '../../constants'
 import { useCommentPinMutation } from '../../graphql/mutations/CommentPin'
 import { CommentAction, UseCommentActionsOptions } from './types'
 
@@ -14,6 +17,7 @@ const useCommentActions = ({
   enableShare = true,
   shareDisabled = true,
 }: UseCommentActionsOptions): CommentAction[] => {
+  const texts = useTextOverrides(COMMENTS_TEXTS_NAMESPACE, COMMENTS_TEXTS)
   const [pinComment, isPinningComment] = useCommentPinMutation()
 
   const handlePinComment = () => {
@@ -29,7 +33,7 @@ const useCommentActions = ({
   return [
     {
       id: 'share',
-      label: 'Share Comment',
+      label: texts.shareComment,
       hasPermission: enableShare,
       disabled: shareDisabled,
       closeOnSelect: true,
@@ -37,7 +41,7 @@ const useCommentActions = ({
     },
     {
       id: 'pin',
-      label: `${comment?.isPinned ? 'Unpin' : 'Pin'} Comment`,
+      label: comment?.isPinned ? texts.unpinComment : texts.pinComment,
       hasPermission: comment?.canPin,
       disabled: isPinningComment,
       closeOnSelect: true,
@@ -45,7 +49,7 @@ const useCommentActions = ({
     },
     {
       id: 'edit',
-      label: 'Edit Comment',
+      label: texts.editComment,
       hasPermission: comment?.canChange,
       disabled: false,
       closeOnSelect: true,
@@ -55,7 +59,7 @@ const useCommentActions = ({
       ? [
           {
             id: 'delete' as const,
-            label: 'Delete Comment',
+            label: texts.deleteComment,
             hasPermission: comment?.canDelete,
             disabled: false,
             isDestructive: true,

@@ -3,16 +3,19 @@
 import { FC } from 'react'
 
 import { TextField } from '@baseapp-frontend/design-system/components/web/inputs'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, FormControlLabel, Switch, Typography } from '@mui/material'
 import { Controller } from 'react-hook-form'
 
+import { CONTENT_FEED_TEXTS, CONTENT_FEED_TEXTS_NAMESPACE } from '../../common/constants'
 import PostImageDropzone from '../PostImageDropzone'
 import { ButtonContainer, HeaderContainer, RootContainer } from '../styled'
 import { PostFormProps } from './types'
 
 const PostForm: FC<PostFormProps> = ({ form, onSubmit, onCancel, isSaving }) => {
+  const texts = useTextOverrides(CONTENT_FEED_TEXTS_NAMESPACE, CONTENT_FEED_TEXTS)
   const isReactionsEnabled = form.watch('isReactionsEnabled')
   const {
     formState: { isDirty, isValid },
@@ -23,11 +26,11 @@ const PostForm: FC<PostFormProps> = ({ form, onSubmit, onCancel, isSaving }) => 
       <form onSubmit={onSubmit}>
         <HeaderContainer>
           <Typography component="h4" variant="h4">
-            New Post
+            {texts.newPost}
           </Typography>
           <ButtonContainer>
             <Button variant="outlined" color="inherit" onClick={onCancel} disableRipple>
-              Cancel
+              {texts.cancel}
             </Button>
             <LoadingButton
               color="inherit"
@@ -36,7 +39,7 @@ const PostForm: FC<PostFormProps> = ({ form, onSubmit, onCancel, isSaving }) => 
               disabled={!isDirty || !isValid || isSaving}
               sx={{ maxWidth: 'fit-content', justifySelf: 'end' }}
             >
-              Publish
+              {texts.publish}
             </LoadingButton>
           </ButtonContainer>
         </HeaderContainer>
@@ -45,7 +48,7 @@ const PostForm: FC<PostFormProps> = ({ form, onSubmit, onCancel, isSaving }) => 
           <TextField
             name="content"
             type="text"
-            placeholder="What is on your mind?"
+            placeholder={texts.contentPlaceholder}
             multiline
             rows={4}
             control={form.control}
@@ -65,7 +68,7 @@ const PostForm: FC<PostFormProps> = ({ form, onSubmit, onCancel, isSaving }) => 
                   }
                 />
               }
-              label="Disable Reactions to this post"
+              label={texts.disableReactions}
             />
           )}
         />

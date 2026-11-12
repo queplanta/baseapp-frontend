@@ -1,7 +1,10 @@
 import { FC } from 'react'
 
+import { useTextOverrides } from '@baseapp-frontend/utils'
+
 import { MenuItem, MenuList, Typography } from '@mui/material'
 
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from '../../../../common/texts'
 import { ChatRoomOptionsProps } from './types'
 
 const ChatRoomOptions: FC<ChatRoomOptionsProps> = ({
@@ -12,28 +15,34 @@ const ChatRoomOptions: FC<ChatRoomOptionsProps> = ({
   onDetailsClicked,
   onLeaveClicked,
   onContactDetailsClicked,
-}) => (
-  <MenuList>
-    <MenuItem onClick={onArchiveClicked} disabled={isArchiveMutationInFlight}>
-      <Typography variant="body2">{isArchived ? 'Unarchive Chat' : 'Archive Chat'}</Typography>
-    </MenuItem>
-    {isGroup ? (
-      <>
-        <MenuItem onClick={onDetailsClicked}>
-          <Typography variant="body2">Group Details</Typography>
-        </MenuItem>
-        <MenuItem onClick={onLeaveClicked}>
-          <Typography variant="body2" color="error">
-            Leave Group
-          </Typography>
-        </MenuItem>
-      </>
-    ) : (
-      <MenuItem onClick={onContactDetailsClicked}>
-        <Typography variant="body2">Contact Details</Typography>
+}) => {
+  const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
+
+  return (
+    <MenuList>
+      <MenuItem onClick={onArchiveClicked} disabled={isArchiveMutationInFlight}>
+        <Typography variant="body2">
+          {isArchived ? texts.unarchiveChat : texts.archiveChat}
+        </Typography>
       </MenuItem>
-    )}
-  </MenuList>
-)
+      {isGroup ? (
+        <>
+          <MenuItem onClick={onDetailsClicked}>
+            <Typography variant="body2">{texts.groupDetails}</Typography>
+          </MenuItem>
+          <MenuItem onClick={onLeaveClicked}>
+            <Typography variant="body2" color="error">
+              {texts.leaveGroup}
+            </Typography>
+          </MenuItem>
+        </>
+      ) : (
+        <MenuItem onClick={onContactDetailsClicked}>
+          <Typography variant="body2">{texts.contactDetails}</Typography>
+        </MenuItem>
+      )}
+    </MenuList>
+  )
+}
 
 export default ChatRoomOptions

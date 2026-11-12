@@ -1,11 +1,14 @@
 import React, { FC, useState } from 'react'
 
+import { useTextOverrides } from '@baseapp-frontend/utils'
+
 import { Box, Button } from '@mui/material'
 import { DateValidationError, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { DateTime } from 'luxon'
 
+import { ACTIVITY_LOG_TEXTS, ACTIVITY_LOG_TEXTS_NAMESPACE } from '../constants'
 import { DateFilterComponentProps } from './types'
 
 const DateFilterComponent: FC<DateFilterComponentProps> = ({
@@ -15,6 +18,7 @@ const DateFilterComponent: FC<DateFilterComponentProps> = ({
   onApply,
   onClearFilter,
 }) => {
+  const texts = useTextOverrides(ACTIVITY_LOG_TEXTS_NAMESPACE, ACTIVITY_LOG_TEXTS)
   const [tempCreatedFrom, setTempCreatedFrom] = useState<DateTime | null>(createdFrom ?? null)
   const [tempCreatedTo, setTempCreatedTo] = useState<DateTime | null>(createdTo ?? null)
 
@@ -23,13 +27,13 @@ const DateFilterComponent: FC<DateFilterComponentProps> = ({
   const errorMessage = React.useMemo(() => {
     switch (error) {
       case 'minDate':
-        return 'End date cannot be earlier than start date.'
+        return texts.endBeforeStart
       case 'invalidDate':
-        return 'Your date is not valid'
+        return texts.invalidDate
       default:
         return ''
     }
-  }, [error])
+  }, [error, texts])
 
   const handleApply = () => {
     if (tempCreatedTo && tempCreatedFrom && tempCreatedTo < tempCreatedFrom) {
@@ -63,9 +67,12 @@ const DateFilterComponent: FC<DateFilterComponentProps> = ({
 
   return (
     <Box display="flex" gap={2} flexDirection="column">
-      <LocalizationProvider dateAdapter={AdapterLuxon}>
+      <LocalizationProvider
+        dateAdapter={AdapterLuxon}
+        adapterLocale={texts.dateLocale || undefined}
+      >
         <DatePicker
-          label="Start date"
+          label={texts.startDate}
           onChange={(newValue) => setTempCreatedFrom(newValue)}
           disableFuture
           value={tempCreatedFrom}
@@ -81,7 +88,7 @@ const DateFilterComponent: FC<DateFilterComponentProps> = ({
           }}
         />
         <DatePicker
-          label="End date"
+          label={texts.endDate}
           value={tempCreatedTo}
           onChange={(newValue) => setTempCreatedTo(newValue)}
           onError={(newError) => setError(newError)}
@@ -103,10 +110,10 @@ const DateFilterComponent: FC<DateFilterComponentProps> = ({
       </LocalizationProvider>
       <Box display="flex" gap={2} flexDirection="column" mt={4} mb={2}>
         <Button onClick={handleApply} variant="contained" color="inherit">
-          Filter
+          {texts.filter}
         </Button>
         <Button onClick={handleClear} variant="outlined" color="inherit">
-          Clear Filter
+          {texts.clearFilter}
         </Button>
       </Box>
     </Box>

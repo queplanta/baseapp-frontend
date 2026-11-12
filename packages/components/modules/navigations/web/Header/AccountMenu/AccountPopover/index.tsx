@@ -6,6 +6,7 @@ import { useCurrentProfile } from '@baseapp-frontend/authentication'
 import { ClickableAvatar } from '@baseapp-frontend/design-system/components/web/avatars'
 import { Popover } from '@baseapp-frontend/design-system/components/web/popovers'
 import { usePopover } from '@baseapp-frontend/design-system/hooks/common'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 // TODO: review importing components directly from another module
 import {
@@ -14,6 +15,7 @@ import {
   ProfilesList as DefaultProfilesList,
   SwitchProfileMenu as DefaultSwitchProfileMenu,
 } from '../../../../../profiles/web'
+import { NAVIGATIONS_TEXTS, NAVIGATIONS_TEXTS_NAMESPACE } from '../../../constants'
 import PopoverContent from '../__shared__/PopoverContent'
 import DefaultCurrentUser from './CurrentUser'
 import DefaultMenuItems from './MenuItems'
@@ -34,6 +36,7 @@ const AccountPopover: FC<AccountPopoverProps> = ({
   AddProfileMenuItemProps = {},
   LogoutItemProps = {},
 }) => {
+  const texts = useTextOverrides(NAVIGATIONS_TEXTS_NAMESPACE, NAVIGATIONS_TEXTS)
   const { currentProfile: profile } = useCurrentProfile()
 
   const popover = usePopover()
@@ -66,7 +69,7 @@ const AccountPopover: FC<AccountPopoverProps> = ({
       <ClickableAvatar
         color="secondary"
         src={profile?.image ?? ''}
-        alt="User avatar"
+        alt={texts.userAvatarAlt}
         onClick={popover.onOpen}
         isOpen={!!popover.open}
       />

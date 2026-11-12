@@ -1,4 +1,5 @@
 import { useCurrentProfile } from '@baseapp-frontend/authentication'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { useFragment } from 'react-relay'
 import ConnectionHandler from 'relay-connection-handler-plus'
@@ -9,6 +10,7 @@ import { RoomTitleFragment$key } from '../../../__generated__/RoomTitleFragment.
 import { SingleChatDetailsFragment$key } from '../../../__generated__/SingleChatDetailsFragment.graphql'
 import { RoomTitleFragment } from './graphql/fragments/RoomTitle'
 import { SingleChatDetailsFragment } from './graphql/fragments/SingleChatDetailsFragment'
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from './texts'
 
 export const useTitleAndImage = (titleRef: RoomTitleFragment$key | null | undefined) => {
   const data = useFragment(RoomTitleFragment, titleRef ?? null)
@@ -19,6 +21,7 @@ export const useTitleAndImage = (titleRef: RoomTitleFragment$key | null | undefi
 }
 
 export const useSingleChatDetails = (chatRef: SingleChatDetailsFragment$key) => {
+  const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
   const chatDetails = useFragment<SingleChatDetailsFragment$key>(SingleChatDetailsFragment, chatRef)
 
   const { id, isGroup, isSoleAdmin, title, image, otherParticipant: participant } = chatDetails
@@ -35,7 +38,7 @@ export const useSingleChatDetails = (chatRef: SingleChatDetailsFragment$key) => 
     return {
       roomId: id,
       isGroup,
-      title: 'Deleted User',
+      title: texts.deletedUser,
       image: undefined,
     }
   }
@@ -43,7 +46,7 @@ export const useSingleChatDetails = (chatRef: SingleChatDetailsFragment$key) => 
     return {
       roomId: id,
       isGroup,
-      title: 'Deleted User',
+      title: texts.deletedUser,
       image: undefined,
       username: undefined,
       biography: undefined,

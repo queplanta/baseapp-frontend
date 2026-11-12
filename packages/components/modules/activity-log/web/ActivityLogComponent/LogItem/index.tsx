@@ -1,25 +1,29 @@
 import { FC } from 'react'
 
+import { useTextOverrides } from '@baseapp-frontend/utils'
+
 import { Box, Typography, useTheme } from '@mui/material'
 
+import { ACTIVITY_LOG_TEXTS, ACTIVITY_LOG_TEXTS_NAMESPACE } from '../constants'
 import { getUpdateMessage } from '../utils'
 import { LogDiff, LogItemProps } from './types'
 
-const verbMapping: { [key: string]: string } = {
-  'comments.add_comment': 'Created a comment',
-  'comments.change_comment': 'Edited a comment',
-  'comments.delete_comment': 'Deleted a comment',
-  'comments.reply_comment': 'Replied to a comment',
-  'comments.pin_comment': 'Pinned a comment',
-  'baseapp_reactions.add_reaction': 'Added a reaction',
-}
-
 const LogItem: FC<LogItemProps> = ({ log, sx }) => {
   const theme = useTheme()
+  const texts = useTextOverrides(ACTIVITY_LOG_TEXTS_NAMESPACE, ACTIVITY_LOG_TEXTS)
   if (!log?.verb) return null
 
+  const verbMapping: { [key: string]: string } = {
+    'comments.add_comment': texts.verbAddComment,
+    'comments.change_comment': texts.verbChangeComment,
+    'comments.delete_comment': texts.verbDeleteComment,
+    'comments.reply_comment': texts.verbReplyComment,
+    'comments.pin_comment': texts.verbPinComment,
+    'baseapp_reactions.add_reaction': texts.verbAddReaction,
+  }
+
   const getLogMessage = (verb: string, diff?: LogDiff) => {
-    if (diff) return getUpdateMessage(verb, diff)
+    if (diff) return getUpdateMessage(verb, diff, texts)
     return verbMapping[verb] ?? verb
   }
 

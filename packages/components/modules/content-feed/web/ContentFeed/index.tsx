@@ -2,14 +2,18 @@
 
 import { FC, useCallback } from 'react'
 
+import { useTextOverrides } from '@baseapp-frontend/utils'
+
 import { Button, Typography } from '@mui/material'
 import { useRouter } from 'next/navigation'
 
+import { CONTENT_FEED_TEXTS, CONTENT_FEED_TEXTS_NAMESPACE } from '../../common/constants'
 import PostList from '../PostList'
 import { HeaderContainer, RootContainer } from '../styled'
 import { ContentFeedProps } from './types'
 
 const ContentFeed: FC<ContentFeedProps> = ({ preloadedQuery }) => {
+  const texts = useTextOverrides(CONTENT_FEED_TEXTS_NAMESPACE, CONTENT_FEED_TEXTS)
   const router = useRouter()
 
   const onNewPost = useCallback(() => {
@@ -20,7 +24,7 @@ const ContentFeed: FC<ContentFeedProps> = ({ preloadedQuery }) => {
     <RootContainer>
       <HeaderContainer>
         <Typography component="h4" variant="h4">
-          Content Feed
+          {texts.title}
         </Typography>
         <Button
           variant="outlined"
@@ -29,7 +33,7 @@ const ContentFeed: FC<ContentFeedProps> = ({ preloadedQuery }) => {
           disableRipple
           sx={{ maxWidth: 'fit-content' }}
         >
-          New Post
+          {texts.newPost}
         </Button>
       </HeaderContainer>
 

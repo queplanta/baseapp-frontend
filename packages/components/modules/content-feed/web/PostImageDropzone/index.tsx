@@ -3,13 +3,16 @@
 import { FC, useState } from 'react'
 
 import { Dropzone } from '@baseapp-frontend/design-system/components/web/dropzones'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, Typography } from '@mui/material'
 import Image from 'next/image'
 
+import { CONTENT_FEED_TEXTS, CONTENT_FEED_TEXTS_NAMESPACE } from '../../common/constants'
 import { PostImageDropzoneProps } from './types'
 
 const PostImageDropzone: FC<PostImageDropzoneProps> = ({ form }) => {
+  const texts = useTextOverrides(CONTENT_FEED_TEXTS_NAMESPACE, CONTENT_FEED_TEXTS)
   const [selectedPreview, setSelectedPreview] = useState<File>()
   const [selectedPreviewIndex, setSelectedPreviewIndex] = useState<number>()
 
@@ -57,7 +60,7 @@ const PostImageDropzone: FC<PostImageDropzoneProps> = ({ form }) => {
         accept={{ 'image/png': ['.png'], 'image/gif': ['.gif'], 'image/jpeg': ['.jpg', '.jpeg'] }}
         title={
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Click to browse or drag and drop images and videos.
+            {texts.dropzoneHint}
           </Typography>
         }
         onFileClick={(selectedFile, index) => {

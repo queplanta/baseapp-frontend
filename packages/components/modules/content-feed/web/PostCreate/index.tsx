@@ -2,13 +2,14 @@
 
 import { FC, useCallback } from 'react'
 
-import { setFormRelayErrors, useNotification } from '@baseapp-frontend/utils'
+import { setFormRelayErrors, useNotification, useTextOverrides } from '@baseapp-frontend/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
 import { useContentPostCreateMutation } from '../../common'
+import { CONTENT_FEED_TEXTS, CONTENT_FEED_TEXTS_NAMESPACE } from '../../common/constants'
 import PostForm from '../PostForm'
 import {
   CONTENT_POST_CREATE_FORM_VALIDATION,
@@ -17,6 +18,7 @@ import {
 import { ContentPostCreateForm, UploadableContentPostFiles } from '../PostForm/types'
 
 const PostCreate: FC = () => {
+  const texts = useTextOverrides(CONTENT_FEED_TEXTS_NAMESPACE, CONTENT_FEED_TEXTS)
   const router = useRouter()
   const { sendToast } = useNotification()
   const [commitMutation, isMutationInFlight] = useContentPostCreateMutation()
@@ -47,11 +49,11 @@ const PostCreate: FC = () => {
       onCompleted(response) {
         const errors = response.contentPostCreate?.errors
         if (errors) {
-          sendToast('Something went wrong', { type: 'error' })
+          sendToast(texts.createError, { type: 'error' })
           setFormRelayErrors(form, errors)
         } else {
           form.reset({ content: '', isReactionsEnabled: true })
-          sendToast('Post Created Successfully', { type: 'success' })
+          sendToast(texts.createSuccess, { type: 'success' })
           router.push(`/posts/${response.contentPostCreate?.contentPost?.node?.id}`)
         }
       },

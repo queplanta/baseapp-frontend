@@ -1,11 +1,13 @@
 import { FC } from 'react'
 
 import { LoadingState } from '@baseapp-frontend/design-system/components/web/displays'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box } from '@mui/material'
 import { Virtuoso } from 'react-virtuoso'
 
 import { CommentsSubscription, NUMBER_OF_COMMENTS_TO_LOAD_NEXT, useCommentList } from '../../common'
+import { COMMENTS_TEXTS, COMMENTS_TEXTS_NAMESPACE } from '../../common/constants'
 import DefaultCommentItem from '../CommentItem'
 import DefaultEmptyState from './EmptyState'
 import { HeaderSpacer, ScrollContainer } from './styled'
@@ -20,6 +22,7 @@ const CommentsList: FC<CommentsListProps> = ({
   CommentItemProps,
   VirtuosoProps,
 }) => {
+  const texts = useTextOverrides(COMMENTS_TEXTS_NAMESPACE, COMMENTS_TEXTS)
   const { data: target, comments, loadNext, isLoadingNext, hasNext } = useCommentList(targetRef)
 
   if (comments.length === 0) {
@@ -56,7 +59,7 @@ const CommentsList: FC<CommentsListProps> = ({
       <LoadingState
         sx={{ paddingTop: 3, paddingBottom: 1 }}
         CircularProgressProps={{ size: 15 }}
-        aria-label="loading more comments"
+        aria-label={texts.loadingMoreComments}
       />
     )
   }

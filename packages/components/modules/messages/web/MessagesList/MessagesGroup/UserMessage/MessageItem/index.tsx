@@ -7,13 +7,14 @@ import {
   DownloadIcon,
   PenEditIcon,
 } from '@baseapp-frontend/design-system/components/web/icons'
-import { useNotification } from '@baseapp-frontend/utils'
+import { useNotification, useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Typography } from '@mui/material'
 import { useFragment } from 'react-relay'
 
 import { ActionsOverlay, HOVER_OVERLAY_MODES } from '../../../../../../__shared__/web'
 import { MessageItemFragment } from '../../../../../common'
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from '../../../../../common/texts'
 import { useMessageDeleteMutation } from '../../../../../common/graphql/mutations/MessageDelete'
 import MessageUpdate from '../../../../MessageUpdate'
 import { MessageContent, MessageItemContainer } from './styled'
@@ -24,6 +25,7 @@ const MessageItem: FC<MessageItemProps> = ({
   isFirstGroupedMessage,
   isGroup = false,
 }) => {
+  const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
   const { currentProfile } = useCurrentProfile()
   const message = useFragment(MessageItemFragment, messageRef)
   const isOwnMessage = currentProfile?.id === message?.profile?.id
@@ -46,15 +48,13 @@ const MessageItem: FC<MessageItemProps> = ({
       },
       onCompleted: (response, errors) => {
         if (!errors) {
-          sendToast('Your message was deleted', { type: 'error' })
+          sendToast(texts.messageDeleted, { type: 'error' })
         }
       },
     })
   }
 
-  const deleteDialogContent = isGroup
-    ? 'The message will be deleted for everyone in this chat.'
-    : 'The message will be deleted for both you and the other person.'
+  const deleteDialogContent = isGroup ? texts.deleteMessageInGroup : texts.deleteMessageInChat
 
   const renderMessageContent = () => {
     if (isEditMode) {
@@ -74,22 +74,22 @@ const MessageItem: FC<MessageItemProps> = ({
 
   return (
     <ActionsOverlay
-      title="message"
+      title={texts.message}
       actions={[
         {
           disabled: false,
           icon: <CopyIcon />,
-          label: 'Copy',
+          label: texts.copy,
           onClick: () => {
             navigator.clipboard.writeText(message?.content || '')
-            sendToast('Message copied to clipboard.', { type: 'info', shouldShowProgress: true })
+            sendToast(texts.messageCopied, { type: 'info', shouldShowProgress: true })
           },
           hasPermission: true,
         },
         {
           disabled: deletedMessage || !isOwnMessage,
           icon: <PenEditIcon />,
-          label: 'Edit',
+          label: texts.edit,
           onClick: () => {
             setIsEditMode(true)
           },
@@ -99,7 +99,7 @@ const MessageItem: FC<MessageItemProps> = ({
         {
           disabled: false,
           icon: <DownloadIcon />,
-          label: 'Download Attachments',
+          label: texts.downloadAttachments,
           onClick: () => {}, // TODO: Implement download attachments
           hasPermission: true,
         },
@@ -110,7 +110,7 @@ const MessageItem: FC<MessageItemProps> = ({
       isDeletingItem={isMutationInFlight}
       disableDeleteButton={!isOwnMessage || deletedMessage}
       DeleteDialogProps={{
-        content: `Are you sure you want to delete this message? ${deleteDialogContent}`,
+        content: texts.deleteMessageConfirm(deleteDialogContent),
       }}
       ContainerProps={{
         flexDirection: isOwnMessage ? 'row' : 'row-reverse',

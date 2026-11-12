@@ -1,8 +1,9 @@
-import { useNotification } from '@baseapp-frontend/utils'
+import { useNotification, useTextOverrides } from '@baseapp-frontend/utils'
 
 import { UseMutationConfig, graphql, useMutation } from 'react-relay'
 
 import { ReportCreateMutation } from '../../../../../__generated__/ReportCreateMutation.graphql'
+import { PROFILES_TEXTS, PROFILES_TEXTS_NAMESPACE } from '../../constants'
 
 export const ReportCreateMutationQuery = graphql`
   mutation ReportCreateMutation($input: ReportCreateInput!) {
@@ -24,6 +25,7 @@ export const useReportCreateMutation = (): [
   const [commitMutation, isMutationInFlight] =
     useMutation<ReportCreateMutation>(ReportCreateMutationQuery)
 
+  const texts = useTextOverrides(PROFILES_TEXTS_NAMESPACE, PROFILES_TEXTS)
   const { sendMutationErrorToast, sendToast } = useNotification()
   const commit = (config: UseMutationConfig<ReportCreateMutation>) => {
     commitMutation({
@@ -34,7 +36,7 @@ export const useReportCreateMutation = (): [
       },
       onError: (error) => {
         if (error.message.includes('duplicate key value violates unique constraint')) {
-          sendToast('You have already reported this profile.', { type: 'error' })
+          sendToast(texts.alreadyReported, { type: 'error' })
         } else {
           sendToast(error.message, { type: 'error' })
         }

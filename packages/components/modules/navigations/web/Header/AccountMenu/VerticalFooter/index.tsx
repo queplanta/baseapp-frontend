@@ -8,7 +8,7 @@ import { Iconify } from '@baseapp-frontend/design-system/components/web/images'
 import { Popover } from '@baseapp-frontend/design-system/components/web/popovers'
 import { usePopover } from '@baseapp-frontend/design-system/hooks/common'
 import { useUISettings } from '@baseapp-frontend/design-system/hooks/web'
-import { joinWithSeparator } from '@baseapp-frontend/utils'
+import { joinWithSeparator, useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, Typography } from '@mui/material'
 
@@ -18,6 +18,7 @@ import {
   ProfilesList as DefaultProfilesList,
   SwitchProfileMenu as DefaultSwitchProfileMenu,
 } from '../../../../../profiles/web'
+import { NAVIGATIONS_TEXTS, NAVIGATIONS_TEXTS_NAMESPACE } from '../../../constants'
 import DefaultCurrentUser from '../AccountPopover/CurrentUser'
 import DefaultMenuItems from '../AccountPopover/MenuItems'
 import { PopoverStyles as DefaultPopoverStyles } from '../AccountPopover/styled'
@@ -32,6 +33,7 @@ import {
 import { VerticalFooterProps } from './types'
 
 const VerticalFooter: FC<VerticalFooterProps> = ({ AccountPopoverProps = {} }) => {
+  const texts = useTextOverrides(NAVIGATIONS_TEXTS_NAMESPACE, NAVIGATIONS_TEXTS)
   const { currentProfile: profile } = useCurrentProfile()
   const { user } = useJWTUser()
   const popover = usePopover()
@@ -99,7 +101,7 @@ const VerticalFooter: FC<VerticalFooterProps> = ({ AccountPopoverProps = {} }) =
             width={AVATAR_SIZE}
             height={AVATAR_SIZE}
             src={profile?.image ?? ''}
-            alt="Profile avatar"
+            alt={texts.profileAvatarAlt}
             color="secondary"
             sx={{
               border: (theme) => `2px solid ${theme.palette.divider}`,

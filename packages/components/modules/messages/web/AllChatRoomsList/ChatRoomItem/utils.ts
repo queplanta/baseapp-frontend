@@ -1,12 +1,8 @@
-import {
-  DATE_FORMAT,
-  TIME_FORMAT,
-  formatDateFromApi,
-  isToday,
-  isYesterday,
-} from '@baseapp-frontend/utils'
+import { DATE_FORMAT, TIME_FORMAT, isToday, isYesterday } from '@baseapp-frontend/utils'
 
 import { DateTime } from 'luxon'
+
+import { MESSAGES_TEXTS } from '../../../common/texts'
 
 // Bound every regex pass so adversarial input cannot cause super-linear runtime:
 // the input length is capped and every lazy-quantifier match is constrained to a
@@ -50,28 +46,34 @@ export const getLastMessagePreview = (content?: string | null) => {
   )
 }
 
-export const formatDate = (date?: string | null) => {
+export const formatDate = (
+  date?: string | null,
+  texts: Pick<
+    typeof MESSAGES_TEXTS,
+    'yesterday' | 'monthsAgo' | 'weeksAgo' | 'daysAgo' | 'dateLocale'
+  > = MESSAGES_TEXTS,
+) => {
   if (!date) return ''
-  const dateTime = DateTime.fromISO(date)
+  const parsed = DateTime.fromISO(date)
+  const dateTime = texts.dateLocale && parsed.isValid ? parsed.setLocale(texts.dateLocale) : parsed
   if (!dateTime.isValid) return ''
 
-  if (isToday(date)) return formatDateFromApi(date, { toFormat: TIME_FORMAT[2] })
+  if (isToday(date)) return dateTime.toFormat(TIME_FORMAT[2])
 
-  if (isYesterday(date)) return 'Yesterday'
+  if (isYesterday(date)) return texts.yesterday
 
   const diff = dateTime.diffNow(['years', 'months', 'weeks', 'days']).toObject()
 
   if (diff.months && Math.abs(diff.months) > 0) {
-    if (Math.abs(diff.months) > 1) return `${Math.abs(diff.months).toFixed(0)} months ago`
-    return '1 month ago'
+    return texts.monthsAgo(Number(Math.abs(diff.months).toFixed(0)))
   }
 
   if (diff.weeks && Math.abs(diff.weeks) > 0) {
-    if (Math.abs(diff.weeks) > 1) return `${Math.abs(diff.weeks).toFixed(0)} weeks ago`
-    return '1 week ago'
+    return texts.weeksAgo(Number(Math.abs(diff.weeks).toFixed(0)))
   }
 
-  if (diff.days && Math.abs(diff.days) > 0) return `${Math.abs(diff.days).toFixed(0)} days ago`
+  if (diff.days && Math.abs(diff.days) > 0)
+    return texts.daysAgo(Number(Math.abs(diff.days).toFixed(0)))
 
-  return formatDateFromApi(date, { toFormat: DATE_FORMAT[2] })
+  return dateTime.toFormat(DATE_FORMAT[2])
 }

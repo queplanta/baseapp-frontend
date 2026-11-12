@@ -4,6 +4,7 @@ import { FC, useState } from 'react'
 
 import { ClickableAvatar } from '@baseapp-frontend/design-system/components/web/avatars'
 import { Markdown } from '@baseapp-frontend/design-system/components/web/markdown'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Typography } from '@mui/material'
 import Link from 'next/link'
@@ -12,6 +13,7 @@ import { useRouter } from 'next/navigation'
 import { ActionsOverlay, Timestamp as DefaultTimestamp } from '../../../__shared__/web'
 import { FileUploadList } from '../../../files/web'
 import { useCommentItem } from '../../common'
+import { COMMENTS_TEXTS, COMMENTS_TEXTS_NAMESPACE } from '../../common/constants'
 import DefaultCommentUpdate from '../CommentUpdate'
 import DefaultCommentPinnedBadge from './CommentPinnedBadge'
 import DefaultCommentReactionButton from './CommentReactionButton'
@@ -36,6 +38,7 @@ const CommentItem: FC<CommentItemProps> = ({
   onReplyClick,
   ...customizableProps
 }) => {
+  const texts = useTextOverrides(COMMENTS_TEXTS_NAMESPACE, COMMENTS_TEXTS)
   const {
     enableShare,
     ActionOverlayProps = {},
@@ -86,7 +89,7 @@ const CommentItem: FC<CommentItemProps> = ({
   }
 
   const renderProfileName = () => {
-    if (!hasUser) return <Typography variant="subtitle2">Deleted User</Typography>
+    if (!hasUser) return <Typography variant="subtitle2">{texts.deletedUser}</Typography>
 
     return (
       <Link href={profileUrl}>
@@ -121,7 +124,7 @@ const CommentItem: FC<CommentItemProps> = ({
           showDeleteButton={enableDelete && comment.canDelete}
           handleDeleteItem={deleteComment}
           isDeletingItem={isDeletingComment}
-          title="Comment"
+          title={texts.comment}
           {...restOfActionOverlayProps}
           ref={commentItemRef}
         >
@@ -130,7 +133,7 @@ const CommentItem: FC<CommentItemProps> = ({
               deletedUser={!hasUser}
               width={40}
               height={40}
-              alt={comment.profile?.name ?? `Comment's user avatar`}
+              alt={comment.profile?.name ?? texts.avatarAlt}
               src={comment.profile?.image || ''}
               onClick={() => router.push(profileUrl)}
             />

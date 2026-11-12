@@ -3,11 +3,13 @@
 import React, { FC } from 'react'
 
 import { LoadingState } from '@baseapp-frontend/design-system/components/web/displays'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box } from '@mui/material'
 import { Components, Virtuoso } from 'react-virtuoso'
 
 import { useContentPosts } from '../../common'
+import { CONTENT_FEED_TEXTS, CONTENT_FEED_TEXTS_NAMESPACE } from '../../common/constants'
 import { ContentFeedProps, ContentPostEdges } from '../ContentFeed/types'
 import PostItem from '../PostItem'
 import { HeaderSpacer, PostsListContainer } from './styled'
@@ -19,6 +21,7 @@ const Scroller: Components['List'] = React.forwardRef(({ style, children }, ref)
 ))
 
 const PostList: FC<ContentFeedProps> = ({ preloadedQuery }) => {
+  const texts = useTextOverrides(CONTENT_FEED_TEXTS_NAMESPACE, CONTENT_FEED_TEXTS)
   const {
     data: { contentPosts },
     loadNext,
@@ -38,7 +41,7 @@ const PostList: FC<ContentFeedProps> = ({ preloadedQuery }) => {
       <LoadingState
         sx={{ paddingTop: 3, paddingBottom: 1 }}
         CircularProgressProps={{ size: 15 }}
-        aria-label="loading more posts"
+        aria-label={texts.loadingMorePosts}
       />
     )
   }

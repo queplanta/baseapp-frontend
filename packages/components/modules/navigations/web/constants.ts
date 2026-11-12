@@ -38,3 +38,11 @@ export const NAV_PADDING_DOWN_TO_LG = {
     bottom: HEADER_HEIGHT.MOBILE + 8,
   },
 }
+
+export const NAVIGATIONS_TEXTS_NAMESPACE = 'navigations'
+
+/** Default (English) texts of the navigation components; see `useTextOverrides`. */
+export const NAVIGATIONS_TEXTS = {
+  userAvatarAlt: 'User avatar',
+  profileAvatarAlt: 'Profile avatar',
+}

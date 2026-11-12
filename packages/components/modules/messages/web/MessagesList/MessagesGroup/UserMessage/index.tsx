@@ -2,11 +2,13 @@ import { FC, useCallback, useMemo } from 'react'
 
 import { useCurrentProfile } from '@baseapp-frontend/authentication'
 import { AvatarWithPlaceholder } from '@baseapp-frontend/design-system/components/web/avatars'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 
 import { MAXIMUM_DIFF_TO_GROUP_MESSAGES_CREATED_TIME } from '../../../../common'
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from '../../../../common/texts'
 import DefaultMessageItem from './MessageItem'
 import Timestamp from './Timestamp'
 import { MessageColumn, MessageRow } from './styled'
@@ -21,6 +23,7 @@ const UserMessage: FC<UserMessageProps> = ({
   MessageItem = DefaultMessageItem,
   MessageItemProps = {},
 }) => {
+  const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
   const { currentProfile } = useCurrentProfile()
   const isProfileNullOrUndefined = message?.profile == null || message?.profile === undefined
 
@@ -86,7 +89,7 @@ const UserMessage: FC<UserMessageProps> = ({
       <MessageColumn alignment={flexAlignments} grouped={isFirstGroupedMessage}>
         {canShowName && (
           <Typography variant="subtitle2" color="text.primary" marginBottom={1 / 2}>
-            {isProfileNullOrUndefined ? 'Deleted User' : message?.profile?.name}
+            {isProfileNullOrUndefined ? texts.deletedUser : message?.profile?.name}
           </Typography>
         )}
         <MessageItem

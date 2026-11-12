@@ -9,6 +9,7 @@ import { Popover } from '@baseapp-frontend/design-system/components/web/popovers
 import { TypographyWithEllipsis } from '@baseapp-frontend/design-system/components/web/typographies'
 import { usePopover } from '@baseapp-frontend/design-system/hooks/common'
 import { useResponsive } from '@baseapp-frontend/design-system/hooks/web'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, Typography } from '@mui/material'
 
@@ -18,6 +19,7 @@ import {
   useChatRoom,
   useSingleChatDetails,
 } from '../../../common'
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from '../../../common/texts'
 import LeaveGroupDialog from '../../__shared__/LeaveGroupDialog'
 import ChatRoomOptions from './ChatRoomOptions'
 import { BackButtonContainer, ChatHeaderContainer, ChatTitleContainer } from './styled'
@@ -31,6 +33,7 @@ const ChatRoomHeader: FC<ChatRoomHeaderProps> = ({
   onDisplayProfileSummaryClicked,
   roomId,
 }) => {
+  const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
   const [open, setOpen] = useState(false)
   const { currentProfile } = useCurrentProfile()
 
@@ -77,7 +80,7 @@ const ChatRoomHeader: FC<ChatRoomHeaderProps> = ({
         ) : (
           <BackButtonContainer>
             <IconButton
-              aria-label="return to chat room list"
+              aria-label={texts.returnToChatRoomList}
               onClick={resetChatRoom}
               sx={{ maxWidth: 'fit-content' }}
             >
@@ -114,7 +117,7 @@ const ChatRoomHeader: FC<ChatRoomHeaderProps> = ({
             )}
           </Box>
           <Box>
-            <IconButton onClick={onChatRoomOptionsClicked} aria-label="Show chatroom options">
+            <IconButton onClick={onChatRoomOptionsClicked} aria-label={texts.showChatRoomOptions}>
               <ThreeDotsIcon sx={{ fontSize: '24px' }} />
             </IconButton>
             <Popover

@@ -1,7 +1,13 @@
 import { FC } from 'react'
 
-import { formatRelativeTime } from '@baseapp-frontend/utils'
+import {
+  RELATIVE_TIME_TEXTS,
+  RELATIVE_TIME_TEXTS_NAMESPACE,
+  formatRelativeTime,
+  useTextOverrides,
+} from '@baseapp-frontend/utils'
 
+import { NOTIFICATIONS_TEXTS, NOTIFICATIONS_TEXTS_NAMESPACE } from '../../../../common/constants'
 import DefaultNotificationAvatar from '../Notification/NotificationAvatar'
 import DefaultNotificationBody from '../Notification/NotificationBody'
 import DefaultNotificationHeader from '../Notification/NotificationHeader'
@@ -22,8 +28,10 @@ const CommentReply: FC<CommentReplyProps> = ({
   NotificationBody = DefaultNotificationBody,
   NotificationBodyProps = {},
 }) => {
+  const texts = useTextOverrides(NOTIFICATIONS_TEXTS_NAMESPACE, NOTIFICATIONS_TEXTS)
+  const relativeTimeTexts = useTextOverrides(RELATIVE_TIME_TEXTS_NAMESPACE, RELATIVE_TIME_TEXTS)
   // eslint-disable-next-line no-underscore-dangle
-  const message = `replied to your comment`
+  const message = texts.commentReply
 
   return (
     <NotificationRoot>
@@ -35,7 +43,7 @@ const CommentReply: FC<CommentReplyProps> = ({
       <NotificationContent>
         <NotificationHeader
           message={message}
-          timestamp={formatRelativeTime(notification.timestamp)}
+          timestamp={formatRelativeTime(notification.timestamp, { texts: relativeTimeTexts })}
           actorName={notification.actor?.name}
           unread={notification.unread}
           {...NotificationHeaderProps}

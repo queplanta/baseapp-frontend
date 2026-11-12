@@ -4,6 +4,7 @@ import { forwardRef, useMemo } from 'react'
 
 import { useDeferredFileAttachments } from '@baseapp-frontend/components/files/common'
 import { UploadingFilesList } from '@baseapp-frontend/components/files/web'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { SocialUpsertForm } from '../../../__shared__/common'
 import {
@@ -12,6 +13,7 @@ import {
   withMentionsInSocialInputProps,
 } from '../../../__shared__/web'
 import { useCommentCreateForm, useCommentReply } from '../../common'
+import { COMMENTS_TEXTS, COMMENTS_TEXTS_NAMESPACE } from '../../common/constants'
 import CommentFilesUpsertActions from './CommentFilesUpsertActions'
 import { CommentCreateProps } from './types'
 
@@ -90,6 +92,7 @@ const CommentCreate = forwardRef<HTMLInputElement, CommentCreateProps>(
     },
     ref,
   ) => {
+    const texts = useTextOverrides(COMMENTS_TEXTS_NAMESPACE, COMMENTS_TEXTS)
     const commentReply = useCommentReply<HTMLDivElement>()
     const {
       handleFilesSelected,
@@ -132,7 +135,7 @@ const CommentCreate = forwardRef<HTMLInputElement, CommentCreateProps>(
       <>
         <SocialInput
           ref={ref}
-          placeholder="Comment..."
+          placeholder={texts.commentPlaceholder}
           autoFocusInput={autoFocusInput}
           form={form}
           formId="comment-create"

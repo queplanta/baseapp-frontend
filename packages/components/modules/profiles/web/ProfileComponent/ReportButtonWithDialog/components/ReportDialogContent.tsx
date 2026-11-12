@@ -7,11 +7,13 @@ import {
   OutlinedCheckMarkIcon,
 } from '@baseapp-frontend/design-system/components/web/icons'
 import { useResponsive } from '@baseapp-frontend/design-system/hooks/web'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { useLazyLoadQuery } from 'react-relay'
 
 import { ReportTypeListQuery as ReportTypeListQueryType } from '../../../../../../__generated__/ReportTypeListQuery.graphql'
+import { PROFILES_TEXTS, PROFILES_TEXTS_NAMESPACE } from '../../../../common/constants'
 import { useReportCreateMutation } from '../../../../common/graphql/mutations/ReportCreate'
 import { ReportTypeListQuery } from '../../../../common/graphql/queries/ReportTypeList'
 import { STEPS } from '../constants'
@@ -22,6 +24,7 @@ import SummaryStep from './SummaryStep'
 import TextStep from './TextStep'
 
 const ReportDialogContent: FC<ReportButtonWithDialogProps> = ({ targetId, handleClose }) => {
+  const texts = useTextOverrides(PROFILES_TEXTS_NAMESPACE, PROFILES_TEXTS)
   const { allReportTypes } = useLazyLoadQuery<ReportTypeListQueryType>(ReportTypeListQuery, {
     topLevelOnly: true,
     targetObjectId: targetId,
@@ -150,13 +153,13 @@ const ReportDialogContent: FC<ReportButtonWithDialogProps> = ({ targetId, handle
           ) : (
             <>
               <NegativeCheckMarkIcon sx={{ color: 'success.main', width: 35, height: 35 }} />
-              <Typography variant="subtitle1">Report</Typography>
+              <Typography variant="subtitle1">{texts.report}</Typography>
             </>
           )}
         </Box>
       ) : (
         <Box display="flex" justifyContent={smDown ? 'center' : 'flex-start'}>
-          <Typography variant={smDown ? 'caption' : 'subtitle1'}>Report</Typography>
+          <Typography variant={smDown ? 'caption' : 'subtitle1'}>{texts.report}</Typography>
         </Box>
       )}
       {steps?.find((step) => step.name === currentStep)?.content}

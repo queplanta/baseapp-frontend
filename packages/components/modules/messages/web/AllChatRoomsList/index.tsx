@@ -13,6 +13,7 @@ import {
 import { LoadingState } from '@baseapp-frontend/design-system/components/web/displays'
 import { Iconify } from '@baseapp-frontend/design-system/components/web/images'
 import { Searchbar as DefaultSearchbar } from '@baseapp-frontend/design-system/components/web/inputs'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, Button, Tab, Tabs, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
@@ -21,9 +22,10 @@ import { Virtuoso } from 'react-virtuoso'
 import { RoomsListFragment$key } from '../../../../__generated__/RoomsListFragment.graphql'
 import { SearchNotFoundState } from '../../../__shared__/web'
 import { useChatRoom, useRoomListSubscription, useRoomsList } from '../../common'
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from '../../common/texts'
 import DefaultChatRoomItem from './ChatRoomItem'
 import DefaultEmptyChatRoomsState from './EmptyChatRoomsState'
-import { CHAT_TAB_LABEL, CHAT_TAB_VALUES } from './constants'
+import { CHAT_TAB_TEXT_KEY, CHAT_TAB_VALUES } from './constants'
 import { CenteredProgress, Header, MainContainer } from './styled'
 import { AllChatRoomsListProps, ChatRoomNode, ChatTabValues } from './types'
 
@@ -37,6 +39,7 @@ const AllChatRoomsList: FC<AllChatRoomsListProps> = ({
   EmptyChatRoomsState = DefaultEmptyChatRoomsState,
   VirtuosoProps = {},
 }) => {
+  const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
   const [tab, setTab] = useState<ChatTabValues>(CHAT_TAB_VALUES.active)
   const [renderList, setRenderList] = useState<boolean>(true)
 
@@ -140,7 +143,7 @@ const AllChatRoomsList: FC<AllChatRoomsListProps> = ({
       <LoadingState
         sx={{ paddingTop: 3, paddingBottom: 1 }}
         CircularProgressProps={{ size: 15 }}
-        aria-label="loading more rooms"
+        aria-label={texts.loadingMoreRooms}
       />
     )
   }
@@ -151,7 +154,7 @@ const AllChatRoomsList: FC<AllChatRoomsListProps> = ({
     return (
       <Box sx={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
         <Typography variant="subtitle2" color="text.primary" sx={{ opacity: isLoadingTab ? 0 : 1 }}>
-          {CHAT_TAB_LABEL[tabValue]}
+          {texts[CHAT_TAB_TEXT_KEY[tabValue]]}
         </Typography>
         {isLoadingTab && <CenteredProgress size={15} aria-hidden="true" />}
       </Box>
@@ -174,7 +177,7 @@ const AllChatRoomsList: FC<AllChatRoomsListProps> = ({
       <Header>
         <Box display="grid" width="100%" gridTemplateColumns="auto max-content" gap={1}>
           <Typography variant="h4" component="span">
-            Messages
+            {texts.title}
           </Typography>
           <Button
             variant="contained"
@@ -182,7 +185,7 @@ const AllChatRoomsList: FC<AllChatRoomsListProps> = ({
             startIcon={<Iconify icon="mingcute:add-line" />}
             onClick={onHeaderClick}
           >
-            New
+            {texts.newChat}
           </Button>
         </Box>
       </Header>
@@ -207,6 +210,7 @@ const AllChatRoomsList: FC<AllChatRoomsListProps> = ({
             onChange={handleSearchChange}
             onClear={handleSearchClear}
             isPending={isPending}
+            placeholder={texts.searchPlaceholder}
             {...SearchbarProps}
           />
         </Box>

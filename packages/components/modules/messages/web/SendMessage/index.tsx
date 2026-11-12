@@ -3,7 +3,7 @@
 import { forwardRef, useMemo } from 'react'
 
 import { useCurrentProfile } from '@baseapp-frontend/authentication'
-import { setFormRelayErrors, useNotification } from '@baseapp-frontend/utils'
+import { setFormRelayErrors, useNotification, useTextOverrides } from '@baseapp-frontend/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Box } from '@mui/material'
@@ -21,6 +21,7 @@ import {
   withMentionsInSocialInputProps,
 } from '../../../__shared__/web'
 import { MESSAGE_TYPE, useSendMessageMutation } from '../../common'
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from '../../common/texts'
 import useMessageDraft from '../../common/useMessageDraft'
 import { LOCAL_STORAGE_MESSAGE_DRAFT_STORAGE } from './constants'
 import { SendMessageProps } from './types'
@@ -85,6 +86,7 @@ const SendMessage = forwardRef<HTMLInputElement, SendMessageProps>(
     { roomId, SocialInput = DefaultSocialInput, SocialInputProps = {}, disableMentions = true },
     ref,
   ) => {
+    const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
     const { currentProfile } = useCurrentProfile()
     const { sendToast } = useNotification()
 
@@ -155,17 +157,17 @@ const SendMessage = forwardRef<HTMLInputElement, SendMessageProps>(
         onCompleted: (response, errors) => {
           if (errors) {
             // TODO: handle errors
-            sendToast('Your last message could not be sent. Please try again.', { type: 'error' })
+            sendToast(texts.sendError, { type: 'error' })
           }
           const mutationErrors = response?.chatRoomSendMessage?.errors
           if (mutationErrors?.length) {
             setFormRelayErrors(form, mutationErrors)
-            sendToast('Your last message could not be sent. Please try again.', { type: 'error' })
+            sendToast(texts.sendError, { type: 'error' })
           }
         },
         // TODO: handle errors
         onError: () => {
-          sendToast('Your last message could not be sent. Please try again.', { type: 'error' })
+          sendToast(texts.sendError, { type: 'error' })
         },
       })
       form.reset()
@@ -179,6 +181,7 @@ const SendMessage = forwardRef<HTMLInputElement, SendMessageProps>(
           form={form}
           submit={onSubmit}
           isLoading={isMutationInFlight}
+          placeholder={texts.messagePlaceholder}
           {...mergedSocialInputProps}
         />
       </Box>

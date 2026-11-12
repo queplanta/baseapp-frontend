@@ -5,7 +5,9 @@ import type { FC } from 'react'
 import { useFileSelect } from '@baseapp-frontend/components/files/common'
 import { IconButton } from '@baseapp-frontend/design-system/components/web/buttons'
 import { AttachmentIcon, MentionIcon } from '@baseapp-frontend/design-system/components/web/icons'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
+import { COMMENTS_TEXTS, COMMENTS_TEXTS_NAMESPACE } from '../../../common/constants'
 import type { CommentFilesUpsertActionsProps } from './types'
 
 /**
@@ -20,6 +22,7 @@ const CommentFilesUpsertActions: FC<CommentFilesUpsertActionsProps> = ({
   maxFileSize,
   acceptedFileTypes,
 }) => {
+  const texts = useTextOverrides(COMMENTS_TEXTS_NAMESPACE, COMMENTS_TEXTS)
   const { open, getInputProps } = useFileSelect({
     onFilesSelected,
     maxFiles,
@@ -37,11 +40,11 @@ const CommentFilesUpsertActions: FC<CommentFilesUpsertActionsProps> = ({
         onClick={open}
         disabled={isUploading}
         isLoading={isUploading}
-        aria-label="Attach files"
+        aria-label={texts.attachFiles}
       >
         <AttachmentIcon />
       </IconButton>
-      <IconButton disabled aria-label="mention">
+      <IconButton disabled aria-label={texts.mention}>
         <MentionIcon />
       </IconButton>
     </div>

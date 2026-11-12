@@ -5,6 +5,7 @@ import { ConfirmDialog } from '@baseapp-frontend/design-system/components/web/di
 import { SwipeableDrawer as DefaultSwipeableDrawer } from '@baseapp-frontend/design-system/components/web/drawers'
 import { TrashCanIcon } from '@baseapp-frontend/design-system/components/web/icons'
 import { usePopover } from '@baseapp-frontend/design-system/hooks/common'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { LoadingButton } from '@mui/lab'
 import { Box, Divider, Typography } from '@mui/material'
@@ -12,7 +13,11 @@ import { LongPressCallbackReason, useLongPress } from 'use-long-press'
 
 import DefaultHoverOverlay from './DefaultHoverOverlay'
 import ThreeDotsMenuHoverOverlay from './ThreeDotsMenuHoverOverlay'
-import { HOVER_OVERLAY_MODES } from './constants'
+import {
+  ACTIONS_OVERLAY_TEXTS,
+  ACTIONS_OVERLAY_TEXTS_NAMESPACE,
+  HOVER_OVERLAY_MODES,
+} from './constants'
 import { IconButtonContentContainer } from './styled'
 import { ActionOverlayProps, LongPressHandler } from './types'
 
@@ -21,7 +26,7 @@ const ActionsOverlay = forwardRef<HTMLDivElement | undefined, ActionOverlayProps
     {
       actions = [],
       children,
-      title = 'Item',
+      title: titleProp,
       showDeleteButton = false,
       isDeletingItem = false,
       disableDeleteButton = false,
@@ -36,6 +41,8 @@ const ActionsOverlay = forwardRef<HTMLDivElement | undefined, ActionOverlayProps
     },
     ref,
   ) => {
+    const texts = useTextOverrides(ACTIONS_OVERLAY_TEXTS_NAMESPACE, ACTIONS_OVERLAY_TEXTS)
+    const title = titleProp ?? texts.defaultTitle
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [isHoveringItem, setIsHoveringItem] = useState(false)
     const [longPressHandler, setLongPressHandler] = useState<LongPressHandler>({
@@ -109,8 +116,8 @@ const ActionsOverlay = forwardRef<HTMLDivElement | undefined, ActionOverlayProps
 
     const renderDeleteDialog = () => (
       <ConfirmDialog
-        title={`Delete ${title}?`}
-        content="Are you sure you want to delete? This action cannot be undone."
+        title={texts.deleteTitle(title)}
+        content={texts.deleteContent}
         action={
           <LoadingButton
             color="error"
@@ -118,7 +125,7 @@ const ActionsOverlay = forwardRef<HTMLDivElement | undefined, ActionOverlayProps
             disabled={isDeletingItem}
             loading={isDeletingItem}
           >
-            Delete
+            {texts.delete}
           </LoadingButton>
         }
         onClose={handleDeleteDialogClose}
@@ -139,7 +146,7 @@ const ActionsOverlay = forwardRef<HTMLDivElement | undefined, ActionOverlayProps
           <SwipeableDrawer
             open={longPressHandler.shouldOpenItemOptions && longPressHandler.isLongPressingItem}
             onClose={handleDrawerClose}
-            aria-label="actions overlay"
+            aria-label={texts.actionsOverlay}
             {...SwipeableDrawerProps}
           >
             <Box display="grid" gridTemplateColumns="1fr" justifySelf="start" gap={1} width="100%">
@@ -179,7 +186,7 @@ const ActionsOverlay = forwardRef<HTMLDivElement | undefined, ActionOverlayProps
                     onClick={handleDeleteDialogOpen}
                     disabled={isDeletingItem || disableDeleteButton}
                     sx={{ width: 'fit-content' }}
-                    aria-label="delete item"
+                    aria-label={texts.deleteItem}
                   >
                     <IconButtonContentContainer>
                       <Box display="grid" justifySelf="center" height="min-content">
@@ -191,7 +198,7 @@ const ActionsOverlay = forwardRef<HTMLDivElement | undefined, ActionOverlayProps
                         variant="body2"
                         color={disableDeleteButton ? 'text.disabled' : 'error.main'}
                       >
-                        Delete
+                        {texts.delete}
                       </Typography>
                     </IconButtonContentContainer>
                   </IconButton>

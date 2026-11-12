@@ -2,6 +2,7 @@ import { FC, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { useCurrentProfile } from '@baseapp-frontend/authentication'
 import { LoadingState } from '@baseapp-frontend/design-system/components/web/displays'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box } from '@mui/material'
 import { usePaginationFragment } from 'react-relay'
@@ -16,6 +17,7 @@ import {
   useMessagesListSubscription,
   useReadMessageMutation,
 } from '../../common'
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from '../../common/texts'
 import DefaultMessagesGroup from './MessagesGroup'
 import { MESSAGES_TO_LOAD_NEXT } from './constants'
 import { HeaderSpacer } from './styled'
@@ -27,6 +29,7 @@ const MessagesList: FC<MessagesListProps> = ({
   MessagesGroup = DefaultMessagesGroup,
   MessagesGroupProps = {},
 }) => {
+  const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
   const {
     data: room,
     loadNext,
@@ -90,7 +93,7 @@ const MessagesList: FC<MessagesListProps> = ({
       <LoadingState
         sx={{ height: 50 }}
         CircularProgressProps={{ size: 15 }}
-        aria-label="loading more messages"
+        aria-label={texts.loadingMoreMessages}
       />
     )
   }

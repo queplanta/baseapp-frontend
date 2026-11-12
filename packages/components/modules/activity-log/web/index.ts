@@ -1,6 +1,7 @@
 // exports web activity-log components
 
 export { default as ActivityLogComponent } from './ActivityLogComponent'
+export * from './ActivityLogComponent/constants'
 export type * from './ActivityLogComponent/types'
 
 export { default as EventFilterChip } from './ActivityLogComponent/EventFilterChip'

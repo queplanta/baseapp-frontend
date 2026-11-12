@@ -4,6 +4,7 @@ import { IconButton } from '@baseapp-frontend/design-system/components/web/butto
 import { LoadingState as DefaultLoadingState } from '@baseapp-frontend/design-system/components/web/displays'
 import { CloseIcon } from '@baseapp-frontend/design-system/components/web/icons'
 import { useResponsive } from '@baseapp-frontend/design-system/hooks/web'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, Divider, Typography } from '@mui/material'
 import { useLazyLoadQuery, usePaginationFragment } from 'react-relay'
@@ -16,6 +17,7 @@ import {
   NotificationsListFragment,
   NotificationsListQuery,
 } from '../../common'
+import { NOTIFICATIONS_TEXTS, NOTIFICATIONS_TEXTS_NAMESPACE } from '../../common/constants'
 import DefaultEmptyState from './EmptyState'
 import MarkAllAsReadButton from './MarkAllAsReadButton'
 import DefaultNotificationItem from './NotificationItem'
@@ -37,6 +39,7 @@ const NotificationsList: FC<NotificationsListProps> = ({
   HeaderContainer = DefaultHeaderContainer,
   ListContainer = DefaultListContainer,
 }) => {
+  const texts = useTextOverrides(NOTIFICATIONS_TEXTS_NAMESPACE, NOTIFICATIONS_TEXTS)
   const smDown = useResponsive('down', 'sm')
 
   const options = { count: 10 }
@@ -64,7 +67,7 @@ const NotificationsList: FC<NotificationsListProps> = ({
       return (
         <>
           <Divider>
-            <Typography variant="body2">Older</Typography>
+            <Typography variant="body2">{texts.older}</Typography>
           </Divider>
           <NotificationItem
             key={`notification-${notification.id}`}
@@ -127,13 +130,16 @@ const NotificationsList: FC<NotificationsListProps> = ({
   return (
     <Box display="grid" gridTemplateRows="min-content 1fr" height="100%">
       <HeaderContainer>
-        <Typography variant="h6">Notifications</Typography>
+        <Typography variant="h6">{texts.title}</Typography>
         <Box display="grid" gridTemplateColumns="max-content min-content">
           {!!data?.notificationsUnreadCount && (
             <MarkAllAsReadButton refetch={refetchNotifications} />
           )}
           {smDown && (
-            <IconButton onClick={() => setIsDrawerOpened(false)} aria-label="close notifications">
+            <IconButton
+              onClick={() => setIsDrawerOpened(false)}
+              aria-label={texts.closeNotifications}
+            >
               <CloseIcon />
             </IconButton>
           )}

@@ -3,11 +3,13 @@
 import { FC, Suspense } from 'react'
 
 import { LoadingState } from '@baseapp-frontend/design-system/components/web/displays'
+import { useTextOverrides } from '@baseapp-frontend/utils'
 
 import { useLazyLoadQuery } from 'react-relay'
 
 import { ChatRoomQuery as ChatRoomQueryType } from '../../../../__generated__/ChatRoomQuery.graphql'
 import { ChatRoomQuery } from '../../common'
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from '../../common/texts'
 import DefaultMessagesList from '../MessagesList'
 import DefaultSendMessage from '../SendMessage'
 import ChatRoomHeader from './ChatRoomHeader'
@@ -23,6 +25,7 @@ const ChatRoom: FC<ChatRoomProps> = ({
   onDisplayGroupDetailsClicked,
   onDisplayProfileSummaryClicked,
 }) => {
+  const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
   // TODO: pre load this query and instead of lazyload
   const { chatRoom } = useLazyLoadQuery<ChatRoomQueryType>(
     ChatRoomQuery,
@@ -37,7 +40,7 @@ const ChatRoom: FC<ChatRoomProps> = ({
 
   // TODO: handle error for chatRoom
   if (!chatRoom) {
-    return <div>Chat room not found</div>
+    return <div>{texts.chatRoomNotFound}</div>
   }
 
   return (

@@ -1,5 +1,14 @@
-export const getUpdateMessage = (verb: string, diff: Record<string, any>): string => {
-  const baseMessage = `Updated ${verb.split('.')[0]}`
+import { ACTIVITY_LOG_TEXTS } from './constants'
+
+export const getUpdateMessage = (
+  verb: string,
+  diff: Record<string, any>,
+  texts: Pick<
+    typeof ACTIVITY_LOG_TEXTS,
+    'updated' | 'updatedProfilePicture' | 'updatedProfileBanner' | 'updatedBio'
+  > = ACTIVITY_LOG_TEXTS,
+): string => {
+  const baseMessage = texts.updated(verb.split('.')[0] ?? verb)
 
   if (!diff) {
     return baseMessage
@@ -8,13 +17,13 @@ export const getUpdateMessage = (verb: string, diff: Record<string, any>): strin
   const updateMessages: string[] = Object.keys(diff).map((key) => {
     switch (key) {
       case 'image':
-        return 'Updated their profile picture'
+        return texts.updatedProfilePicture
       case 'banner_image':
-        return 'Updated their profile banner'
+        return texts.updatedProfileBanner
       case 'biography':
-        return 'Updated their bio'
+        return texts.updatedBio
       default:
-        return `Updated ${key.replace('_', ' ')}`
+        return texts.updated(key.replace('_', ' '))
     }
   })
 

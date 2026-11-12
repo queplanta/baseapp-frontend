@@ -1,16 +1,18 @@
 import { FC, useState } from 'react'
 
 import { SwipeableDrawer } from '@baseapp-frontend/design-system/components/web/drawers'
-import { DATE_FORMAT, formatDate } from '@baseapp-frontend/utils'
+import { DATE_FORMAT, formatDate, useTextOverrides } from '@baseapp-frontend/utils'
 
 import { KeyboardArrowDown } from '@mui/icons-material'
 import { Box, Chip, Divider, Menu, Theme, Typography, useMediaQuery } from '@mui/material'
 import { DateTime } from 'luxon'
 
 import DateFilterComponent from '../DateFilterComponent'
+import { ACTIVITY_LOG_TEXTS, ACTIVITY_LOG_TEXTS_NAMESPACE } from '../constants'
 import { DateFilterChipProps } from './types'
 
 const DateFilterChip: FC<DateFilterChipProps> = ({ fetchParameters, executeRefetch }) => {
+  const texts = useTextOverrides(ACTIVITY_LOG_TEXTS_NAMESPACE, ACTIVITY_LOG_TEXTS)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const isMobile = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'))
@@ -26,16 +28,23 @@ const DateFilterChip: FC<DateFilterChipProps> = ({ fetchParameters, executeRefet
     date ? DateTime.fromFormat(date, DATE_FORMAT.api) : null
 
   const formatLabelDate = (date: string | null): string | null =>
-    date ? formatDate(date, { toFormat: DATE_FORMAT[3] }) : null
+    date
+      ? formatDate(
+          texts.dateLocale
+            ? DateTime.fromFormat(date, DATE_FORMAT.api).setLocale(texts.dateLocale)
+            : date,
+          { toFormat: DATE_FORMAT[3] },
+        )
+      : null
 
   const labelRender = () => {
     const fromDate = formatLabelDate(createdFrom)
     const toDate = formatLabelDate(createdTo)
     if (createdFrom && createdTo) return `${fromDate} - ${toDate}`
 
-    if (createdFrom) return `From ${fromDate}`
-    if (createdTo) return `Until ${toDate}`
-    return 'Period'
+    if (createdFrom) return texts.periodFrom(fromDate ?? '')
+    if (createdTo) return texts.periodUntil(toDate ?? '')
+    return texts.period
   }
 
   const handleOnClickOnChip = (event: React.MouseEvent<HTMLElement>) => {
@@ -49,7 +58,7 @@ const DateFilterChip: FC<DateFilterChipProps> = ({ fetchParameters, executeRefet
   const renderDateFilterComponent = (onClose: () => void) => (
     <>
       <Typography variant="subtitle1" m={4} align="center">
-        Period
+        {texts.period}
       </Typography>
       <Divider sx={{ marginBottom: 2 }} />
       <DateFilterComponent

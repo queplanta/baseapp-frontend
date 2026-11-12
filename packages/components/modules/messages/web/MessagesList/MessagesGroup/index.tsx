@@ -1,10 +1,11 @@
 import { FC, useCallback } from 'react'
 
-import { datesDontHaveSameDay } from '@baseapp-frontend/utils'
+import { datesDontHaveSameDay, useTextOverrides } from '@baseapp-frontend/utils'
 
 import { Box, Divider, Typography, useTheme } from '@mui/material'
 
 import { MESSAGE_TYPE } from '../../../common'
+import { MESSAGES_TEXTS, MESSAGES_TEXTS_NAMESPACE } from '../../../common/texts'
 import DefaultSystemMessage from './SystemMessage'
 import DefaultUserMessage from './UserMessage'
 import { DateGroupTypography } from './styled'
@@ -24,6 +25,7 @@ const MessagesGroup: FC<MessagesGroupProps> = ({
   UserMessage = DefaultUserMessage,
   UserMessageProps = {},
 }) => {
+  const texts = useTextOverrides(MESSAGES_TEXTS_NAMESPACE, MESSAGES_TEXTS)
   const theme = useTheme()
 
   const renderDateOnTopOfMessagesGroup = useCallback(
@@ -38,14 +40,14 @@ const MessagesGroup: FC<MessagesGroupProps> = ({
       ) {
         return (
           <DateGroupTypography color="grey.600" variant="caption">
-            {displayFormattedDate(currentMessage?.created)}
+            {displayFormattedDate(currentMessage?.created, texts)}
           </DateGroupTypography>
         )
       }
 
       return null
     },
-    [allMessages, allMessagesLastIndex, hasNext],
+    [allMessages, allMessagesLastIndex, hasNext, texts],
   )
 
   const renderUnreadMessagesDivider = useCallback(
@@ -63,7 +65,7 @@ const MessagesGroup: FC<MessagesGroupProps> = ({
             }}
           >
             <Typography variant="caption" color="error" sx={{ textAlign: 'center' }}>
-              New Messages
+              {texts.newMessages}
             </Typography>
           </Divider>
         )
@@ -71,7 +73,7 @@ const MessagesGroup: FC<MessagesGroupProps> = ({
 
       return null
     },
-    [allMessages, firstUnreadMessageId, theme.palette.error.light],
+    [allMessages, firstUnreadMessageId, theme.palette.error.light, texts.newMessages],
   )
 
   if (!message) return null
